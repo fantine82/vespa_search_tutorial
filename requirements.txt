@@ -1,0 +1,5 @@
+#Libraries that supports python 3.9.15
+pyvespa
+pandas==1.5.2
+numpy==1.23.4
+

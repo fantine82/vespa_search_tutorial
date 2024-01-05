@@ -1,0 +1,8 @@
+apiVersion: v1
+metadata:
+  askId: AIDE_0075331
+  caAgileId: poc
+  projectKey: null
+  projectFriendlyName: tutorial-search
+  componentType: code
+  targetQG: GATE_00

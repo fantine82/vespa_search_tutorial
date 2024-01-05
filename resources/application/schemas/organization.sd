@@ -1,0 +1,278 @@
+schema organization {
+    document organization {
+        field cosmos_contract type map<string,int> {
+                    indexing: summary
+                    struct-field key {
+                        indexing: attribute
+                        attribute: fast-search
+                    }
+                    struct-field value {
+                        indexing: attribute
+                    }
+                }
+        field csp_contract type map<string,int> {
+                    indexing: summary
+                    struct-field key {
+                        indexing: attribute
+                        attribute: fast-search
+                    }
+                    struct-field value {
+                        indexing: attribute
+                    }
+                } 
+        field unet_contract type map<string,int> {
+                    indexing: summary
+                    struct-field key {
+                        indexing: attribute
+                        attribute: fast-search
+                    }
+                    struct-field value {
+                        indexing: attribute
+                    }
+                } 
+        field specialty_org type map<string,int> {
+                    indexing: summary
+                    struct-field key {
+                        indexing: attribute
+                        attribute: fast-search
+                    }
+                    struct-field value {
+                        indexing: attribute
+                    }
+                }
+        field contract_org type map<string,int> {
+                    indexing: summary
+                    struct-field key {
+                        indexing: attribute
+                        attribute: fast-search
+                    }
+                    struct-field value {
+                        indexing: attribute
+                    }
+                }
+        field national_taxonomy type map<string,int> {
+                    indexing: summary
+                    struct-field key {
+                        indexing: attribute
+                        attribute: fast-search
+                    }
+                    struct-field value {
+                        indexing: attribute
+                    }
+                }
+        field enterprise_provider_id type string {
+            indexing: summary | attribute
+        }
+        field generated_key type string {
+            indexing: summary | attribute
+        }
+        field doc_expire_date type long {
+            indexing: summary | attribute
+            attribute {
+                fast-access
+            }
+        }
+        field first_name type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field middle_name type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field last_name type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field org_name type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field prov_type_code type string {
+            indexing: summary | attribute
+        }
+        field organization_type_code type string {
+            indexing: summary | attribute
+            attribute {
+                fast-search
+            }
+        }
+        field address_id type int {
+            indexing: summary | attribute
+        }
+        field address_line type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field city_name type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field county_name type string {
+            indexing: summary | index
+            index: enable-bm25
+        }
+        field state_code type string {
+            indexing: summary | attribute
+            attribute {
+                fast-search
+            }
+        }
+        field zipcode type string {
+            indexing: summary | attribute
+            attribute {
+                fast-search
+            }
+        }
+        field geocode type position {
+            indexing: summary | attribute
+        }
+    }
+    fieldset person {
+        fields: first_name, middle_name, last_name
+    }
+    fieldset organization {
+        fields: org_name
+    }
+    fieldset address {
+        fields: address_line, city_name, county_name
+    }
+    fieldset default {
+        fields: first_name, middle_name, last_name, org_name, address_line, city_name, county_name
+    }
+    rank-profile org_bm25 inherits default {
+        constants {
+            bm25_org_weight: 2.0
+            bm25_address_weight: 1.0
+        }
+        function bm25_organization() {
+            expression {
+                bm25(org_name)
+            }
+        }
+        function bm25_address() {
+            expression {
+                bm25(address_line) + bm25(city_name) + bm25(county_name)
+            }
+        }
+        first-phase {
+            expression: bm25_org_weight*bm25_organization + bm25_address_weight*bm25_address
+        }
+        summary-features {
+            bm25_organization
+            bm25_address
+        }
+    }
+    rank-profile org_geo_filter inherits default {
+        constants {
+            bm25_org_weight: 2.0
+            bm25_address_weight: 1.0
+        }
+        function bm25_organization() {
+            expression {
+                bm25(org_name)
+            }
+        }
+        function bm25_address() {
+            expression {
+                bm25(address_line) + bm25(city_name) + bm25(county_name)
+            }
+        }
+        function distance_mile() {
+            expression {
+                0.621371 * distance(geocode).km
+            }
+        }
+        first-phase {
+            expression: bm25_org_weight*bm25_organization + bm25_address_weight*bm25_address
+        }
+        summary-features {
+            distance_mile
+            bm25_organization
+            bm25_address
+        }
+    }
+    rank-profile prov_bm25 inherits default {
+        constants {
+            bm25_person_weight: 2.0
+            bm25_address_weight: 1.0
+        }
+        function bm25_person() {
+            expression {
+                bm25(first_name) + bm25(last_name) + bm25(middle_name)
+            }
+        }
+        function bm25_address() {
+            expression {
+                bm25(address_line) + bm25(city_name) + bm25(county_name)
+            }
+        }
+        first-phase {
+            expression: bm25_person_weight*bm25_person + bm25_address_weight*bm25_address
+        }
+        summary-features {
+            bm25_person
+            bm25_address
+        }
+    }
+    rank-profile prov_geo_filter inherits default {
+        constants {
+            bm25_person_weight: 2.0
+            bm25_address_weight: 1.0
+        }
+        function bm25_person() {
+            expression {
+                bm25(first_name) + bm25(last_name) + bm25(middle_name)
+            }
+        }
+        function bm25_address() {
+            expression {
+                bm25(address_line) + bm25(city_name) + bm25(county_name)
+            }
+        }
+        function distance_mile() {
+            expression {
+                0.621371 * distance(geocode).km
+            }
+        }
+        first-phase {
+            expression: bm25_person_weight*bm25_person + bm25_address_weight*bm25_address
+        }
+        summary-features {
+            distance_mile
+            bm25_person
+            bm25_address
+        }
+    }
+    rank-profile geo_ranking inherits default {
+        function bm25_organization() {
+            expression {
+                bm25(org_name)
+            }
+        }
+        function bm25_person() {
+            expression {
+                bm25(first_name) + bm25(last_name) + bm25(middle_name)
+            }
+        }
+        function bm25_address() {
+            expression {
+                bm25(address_line) + bm25(city_name) + bm25(county_name)
+            }
+        }
+        function distance_mile() {
+            expression {
+                0.621371 * distance(geocode).km
+            }
+        }
+        first-phase {
+            expression: -distance(geocode).km
+        }
+        summary-features {
+            distance_mile
+            bm25_organization
+            bm25_person
+            bm25_address
+        }
+    }
+}

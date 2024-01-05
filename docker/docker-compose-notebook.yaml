@@ -1,0 +1,15 @@
+networks:
+    tutorial-search:
+        external: true
+
+services:
+  notebook:
+    user: root
+    container_name: tutorialvespanotebook
+    image: jupyter/base-notebook
+    ports:
+      - 8888:8888
+    volumes:
+      - /Users/yni3/Documents/projects/provider_search/git/tutorial/:/home/jovyan/work
+    networks:
+      - tutorial-search

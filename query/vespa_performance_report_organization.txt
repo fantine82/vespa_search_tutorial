@@ -1,0 +1,37 @@
+Starting clients...
+Stopping clients
+Clients stopped.
+.....
+Clients Joined.
+*** HTTP keep-alive statistics ***
+connection reuse count -- 37820
+***************** Benchmark Summary *****************
+clients:                       5
+ran for:                      30 seconds
+cycle time:                    0 ms
+lower response limit:          0 bytes
+skipped requests:              0
+failed requests:               0
+successful requests:       37725
+cycles not held:           37725
+minimum response time:      1.23 ms
+maximum response time:     21.13 ms
+average response time:      3.92 ms
+25   percentile:              3.00 ms
+50   percentile:              3.60 ms
+75   percentile:              4.50 ms
+90   percentile:              5.60 ms
+95   percentile:              6.50 ms
+98   percentile:              8.00 ms
+99   percentile:              9.30 ms
+99.5 percentile:             10.90 ms
+99.6 percentile:             11.40 ms
+99.7 percentile:             12.10 ms
+99.8 percentile:             12.80 ms
+99.9 percentile:             14.23 ms
+actual query rate:       1271.26 Q/s
+utilization:               99.78 %
+zero hit queries:            378
+zero hit percentage:        1.00 %
+http request status breakdown:
+       200 :    37825 

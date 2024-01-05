@@ -1,0 +1,16 @@
+networks:
+    tutorial-search:
+        external: true
+
+services:
+  vespa:
+    user: root
+    container_name: tutorialvespa
+    image: vespaengine/vespa
+    ports:
+      - 8080:8080
+      - 19071:19071
+    volumes:
+      - /Users/yni3/Documents/projects/provider_search/git/tutorial/
+    networks:
+      - tutorial-search
